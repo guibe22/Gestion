@@ -1,0 +1,52 @@
+﻿@page "/C_aportes"
+@inject IAporteServices AporteServices
+
+<div class= "card">
+
+     <div class="card-header ">
+        <h1>Consulta Aportes</h1>
+     </div>
+
+    <div class="card-body">
+         <table class="table">
+            <thead>
+                <tr>
+                    <th>Aporte ID</th>
+                    <th>Fecha</th>
+                    <th>Persona ID</th>
+                    <th>Concepto</th>
+                    <th>Monto</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var aporte in AporteServices.ListaAportes)
+                {
+                    <tr>
+                        <td>@aporte.AporteId</td>
+                        <td>@aporte.Fecha</td>
+                        <td>@aporte.PersonaId</td>
+                        <td>@aporte.Concepto</td>
+                        <td>@aporte.Monto</td>
+                        
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+     </div>
+
+</div>
+
+
+
+
+
+@code {
+     protected override async Task OnInitializedAsync()
+    {
+       
+        await AporteServices.GetList();
+    }
+    
+}

@@ -1,0 +1,204 @@
+﻿@page "/R_aportes"
+@inject IAporteServices AporteServices
+@inject IPersonaServices PersonaServices
+@inject ITiposAportesServices TiposAportesServices
+
+<EditForm Model="aporte" OnInvalidSubmit="GuardarAp">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class= "card">
+
+     <div class="card-header ">
+        <h1>Registro Aportes</h1>
+     </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-3">
+                  <label for="txtId" class="form-label"> ID</label>
+                  <input type="number"  id="txtEjemplo" class="form-control" @bind-value="aporte.AporteId">   
+            </div>
+        </div>
+        <button name="Btn" id="Btn" class="btn btn-primary mr-2" @onclick="Buscar"> Buscar </button>
+        <div class="row">
+            <div class="col-6">
+                <label for="txtFecha" class="form-label"> Fecha:</label>
+                <input type="date"  id="txtEjemplo" class="form-control" @bind-value="aporte.Fecha">
+                 <ValidationMessage For="@(() => aporte.Fecha)" />
+            </div>
+
+            <div class="col-6"> 
+                <label for="txtPersonaId" class="form-label"> Persona:</label>
+                <InputSelect class="form-select" @bind-Value="aporte.PersonaId">
+                 @foreach (var persona in PersonaServices.ListaPersonas)
+                 {
+                     <option value="@persona.PersonaId">@persona.Nombre</option> 
+                 }
+                 </InputSelect>
+                  <ValidationMessage For="@(() => aporte.PersonaId)" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <label for="txtConcepto" class="form-label"> Concepto:</label>
+                <input type="text"  id="txtEjemplo" class="form-control" @bind-value="aporte.Concepto">
+                <ValidationMessage For="@(() => aporte.Concepto)" />
+            </div>
+
+            <div class="col-6">
+                    <label for="txtMonto" class="form-label"> Monto:</label>
+                    <input type="number"  id="txtEjemplo" class="form-control" @bind-value="aporte.Monto">
+                    <ValidationMessage For="@(() => aporte.Monto)" />
+            </div>
+        </div>
+
+        <h5>Detalle Aportes</h5>
+             
+        <div class="row">
+            <div class="col-4">
+                   <label for="txtAportes" class="form-label"> Tipo Aporte:</label>
+                <InputSelect class="form-select" @bind-Value="aportesDetalle.TipoAporteId">
+                     @foreach (var Tipo in TiposAportesServices.ListaTiposAportes)
+                     {
+                         <option value="@Tipo.TipoAporteId">@Tipo.Descripcion</option> 
+                     }
+                </InputSelect>
+            </div>
+            <div class="col-4">
+
+                <label for="txtValor" class="form-label"> Valor:</label>
+                <input type="number"  id="txtValor" class="form-control" @bind-value="aportesDetalle.Valor">
+                
+            </div>
+            <div class="col-3 d-flex align-items-end">
+                    <button name="btnAgregar" id="btnAgregar" class="btn btn-dark mr-2" @onclick="Agregar" >
+                        <span class="oi oi-plus"></span> Agregar Detalle
+                    </button>
+                </div>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>tipo Aporte</th>
+                    <th> Valor </th>
+                    <th>Persona</th>
+                    <th></th>
+                </tr> 
+            </thead>
+            <tbody>
+                @foreach (var detalle in aporte.DetalleAporte)
+                {
+                    <tr>
+                        <td>@detalle.Id</td>
+                        <td>@detalle.TipoAporteId</td>
+                        <td>@detalle.Valor</td>
+                        <td>@detalle.PersonaId</td>
+                        <td><button name="Btn" id="Btn" class="btn btn-danger mr-2"
+                                 @onclick=@(() => EliminarDetalle(detalle.Id))> 
+                                <span class="oi oi-trash"></span>
+                                </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+     </div>
+     
+
+    <div class="card-footer">
+        <button name="Btn" id="Btn" class="btn btn-primary mr-2" @onclick="Nuevo"> Nuevo </button>
+        <button name="Btn" id="Btn" class="btn btn-success mr-2" @onclick="GuardarAp"> Guardar </button>
+        <button name="Btn" id="Btn" class="btn btn-danger mr-2" @onclick="Eliminar"> Eliminar </button>
+         
+     </div>
+    
+</div>
+
+</EditForm>
+
+
+
+
+@code {
+    public Aportes aporte { get; set; } = new Aportes();
+   
+    public AportesDetalle aportesDetalle {get; set;} = new AportesDetalle();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await TiposAportesServices.GetList();
+        await PersonaServices.GetList();
+    }
+    
+    void GuardarAp(){
+        if(!Validar()){
+            return;
+        }else{
+             AporteServices.Guardar(aporte);
+            Nuevo();
+        }
+    }
+     void Eliminar(){
+        if(AporteServices.Eliminar(aporte.AporteId).Result.Success){
+            Nuevo();
+        }
+        
+    }
+    void Nuevo(){
+        aporte = new Aportes();
+    }
+    async void Buscar(){
+         var Encontrado = await AporteServices.Buscar(aporte.AporteId);
+         if(Encontrado!=null){
+             aporte= Encontrado;
+         }
+    }
+
+     void Agregar(){
+      
+           
+         if( aportesDetalle.Valor>0 && aportesDetalle.TipoAporteId>0){
+              aportesDetalle.Id =0;
+              aportesDetalle.PersonaId = aporte.PersonaId;
+              aporte.DetalleAporte.Add(aportesDetalle);
+              aporte.Monto+= aportesDetalle.Valor;
+              aportesDetalle = new AportesDetalle();
+              
+         }
+
+     
+     }
+     void EliminarDetalle(int detalleId){
+        if(aporte.DetalleAporte!=null && detalleId>0)
+            
+            
+            aporte.DetalleAporte.RemoveAll(d=> d.Id ==detalleId);
+            var total = aporte.DetalleAporte.Sum(p=> p.Valor);
+            aporte.Monto =total;
+            
+        }
+
+    bool Validar(){
+        bool validacion = true;
+        if(aporte.PersonaId<0){validacion= false;}
+        if(String.IsNullOrEmpty(aporte.Concepto)){ validacion=false;}
+        if(aporte.Monto<0){validacion= false;}
+
+        return validacion;
+    }
+    
+    }
+
+    
+
+    
+   
+
+ 
+
+}

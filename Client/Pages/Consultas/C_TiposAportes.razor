@@ -1,0 +1,52 @@
+﻿@page "/C_TiposAportes"
+@inject ITiposAportesServices TiposAportesServices
+
+<div class= "card">
+
+     <div class="card-header ">
+        <h1>Consulta Tipos Aportes</h1>
+     </div>
+
+    <div class="card-body">
+         <table class="table">
+            <thead>
+                <tr>
+                    <th> Tipo Aporte ID</th>
+                    <th>Descripcion</th>
+                    <th>Meta</th>
+                    <th>Logrado</th>
+                  
+                    
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var TipoAporte in TiposAportesServices.ListaTiposAportes)
+                {
+                    <tr>
+                        <td>@TipoAporte.TipoAporteId</td>
+                        <td>@TipoAporte.Descripcion</td>
+                        <td>@TipoAporte.Meta</td>
+                        <td>@TipoAporte.Logrado</td>
+                       
+                        
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+     </div>
+
+</div>
+
+
+
+
+
+@code {
+     protected override async Task OnInitializedAsync()
+    {
+       
+        await TiposAportesServices.GetList();
+    }
+    
+}

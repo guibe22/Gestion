@@ -1,6 +1,11 @@
 ﻿@page "/R_personas"
 @inject IPersonaServices PersonaServices
 
+<EditForm Model="persona" OnInvalidSubmit="Guardar">
+
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
 <div class="card">
         <div class="card-header">
             <h1> Registro de Personas</h1>
@@ -18,6 +23,7 @@
                 <div class="col-6">
                     <label for="txtNombre" class="form-label">Nombre:</label>
                     <input type="text" id="txtNombre" class="form-control" @bind-value="persona.Nombre">
+                    <ValidationMessage For="@(() => persona.Nombre)" />
                 </div>
             </div>
 
@@ -25,10 +31,12 @@
                 <div class="col-6">
                     <label for="txtTelefono" class="form-label">Telefono:</label>
                     <input type="number" id="txtTelefono" class="form-control" @bind-value="persona.Telefono">
+                       <ValidationMessage For="@(() => persona.Telefono)" />
                 </div>
                 <div class="col-6">
                     <label for="txtCelular" class="form-label">Celular:</label>
                     <input type="number" id="txtCelular" class="form-control" @bind-value="persona.Celular">
+                       <ValidationMessage For="@(() => persona.Celular)" />
                 </div>
             </div>
 
@@ -36,10 +44,12 @@
                 <div class="col-6">
                     <label for="txtEmail" class="form-label">Email:</label>
                     <input type="mail" id="txtEmail" class="form-control" @bind-value="persona.Email">
+                       <ValidationMessage For="@(() => persona.Email)" />
                 </div>
                 <div class="col-6">
                     <label for="txtDireccion" class="form-label">Direccion:</label>
                     <input type="text" id="txtDireccion" class="form-control" @bind-value="persona.Direccion">
+                       <ValidationMessage For="@(() => persona.Direccion)" />
                 </div>
             </div>
 
@@ -47,16 +57,20 @@
                 <div class="col-6">
                     <label for="txFechaNacimiento" class="form-label">Persona ID:</label>
                     <input type="date" id="txtFechaNacimiento" class="form-control" @bind-value="persona.FechaNacimiento">
+                       <ValidationMessage For="@(() => persona.FechaNacimiento)" />
                 </div>
                 
             </div>
         </div>
-        <div class="card-footer">
+        <div class="card-footer text-center">
             <button name="Btn" id="Btn" class="btn btn-primary mr-2" @onclick="Nuevo"> Nuevo </button>
             <button name="Btn" id="Btn" class="btn btn-success mr-2" @onclick="Guardar"> Guardar </button>
             <button name="Btn" id="Btn" class="btn btn-danger mr-2" @onclick="Eliminar"> Eliminar </button>
         </div>
     </div>
+
+</EditForm>
+
 
 
 @code {
@@ -64,8 +78,17 @@
 
 
     void Guardar(){
+
+        if(!Validar()){
+            return;
+        }
+        else
+        {
+             PersonaServices.Guardar(persona);
+             Nuevo();
+        }
         
-        PersonaServices.Guardar(persona);
+       
     }
      void Eliminar(){
         PersonaServices.Eliminar(persona.PersonaId);
@@ -78,6 +101,19 @@
          if(Encontrado!=null){
              persona = Encontrado;
          }
+    }
+
+    bool Validar(){
+          bool validacion= true;
+
+        if (String.IsNullOrEmpty(persona.Nombre)){; validacion= false;}
+        if (String.IsNullOrEmpty(persona.Telefono)|| persona.Telefono.Length !=10) {   validacion= false;}
+        if (String.IsNullOrEmpty(persona.Celular)|| persona.Celular.Length !=10 ){ validacion= false;}
+        if (String.IsNullOrEmpty(persona.Email)){ validacion= false;}
+        if (String.IsNullOrEmpty(persona.Direccion)){  validacion= false;}
+        
+
+        return validacion;
     }
     
 }

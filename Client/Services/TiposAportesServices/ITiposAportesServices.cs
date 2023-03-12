@@ -1,4 +1,5 @@
 public interface ITiposAportesServices
 {
-     Task<ServiceResponse<List<TiposAportes>>> GetList();
+     List<TiposAportes> ListaTiposAportes{ get; set;}
+     Task GetList();
 }

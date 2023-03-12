@@ -2,7 +2,7 @@ using System.Net.Http.Json;
 
 public class PersonaServices : IPersonaServices
     {
-
+        
         private readonly HttpClient _http;
 
         public PersonaServices(HttpClient http)
@@ -10,7 +10,9 @@ public class PersonaServices : IPersonaServices
             _http = http;
         }
 
-        public async Task<Personas> Buscar(int Id)
+    public List<Personas> ListaPersonas { get ; set ; } = new List<Personas>();
+
+    public async Task<Personas> Buscar(int Id)
         {
             var result= await _http.GetFromJsonAsync<ServiceResponse<Personas>>($"api/Personas/{Id}");
                 
@@ -28,16 +30,13 @@ public class PersonaServices : IPersonaServices
             return new ServiceResponse<string> { Success = true, Data = result };
         }
 
-        public async Task<ServiceResponse<List<Personas>>> GetList()
+        public async Task GetList()
         {
-            try
+           var results = await _http.GetFromJsonAsync<ServiceResponse<List<Personas>>>("api/Personas");
+
+            if (results != null && results.Data != null)
             {
-                var result = await _http.GetFromJsonAsync<List<Personas>>("api/Personas");
-                return new ServiceResponse<List<Personas>> { Success = true, Data = result };
-            }
-            catch (Exception ex)
-            {
-                return new ServiceResponse<List<Personas>> { Success = false, Message = ex.Message };
+                ListaPersonas = results.Data;
             }
         }
 

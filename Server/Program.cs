@@ -14,6 +14,7 @@ builder.Services.AddDbContext<Context>(options =>
 
 builder.Services.AddScoped<IPersonaServices_S, PersonaServices_S>();
 builder.Services.AddScoped<ITiposAportesServices_S, TiposAportesServices_S>();
+builder.Services.AddScoped<IAporteServices_S, AporteServices_S>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddEndpointsApiExplorer();

@@ -57,7 +57,7 @@ namespace Gestion.Server.Migrations
                     b.Property<int?>("AporteId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PersonaId")
+                    b.Property<int>("PersonaId")
                         .HasColumnType("int");
 
                     b.Property<int>("TipoAporteId")
@@ -69,10 +69,6 @@ namespace Gestion.Server.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AporteId");
-
-                    b.HasIndex("PersonaId");
-
-                    b.HasIndex("TipoAporteId");
 
                     b.ToTable("AporteDetalles");
                 });
@@ -176,20 +172,6 @@ namespace Gestion.Server.Migrations
                     b.HasOne("Aportes", null)
                         .WithMany("DetalleAporte")
                         .HasForeignKey("AporteId");
-
-                    b.HasOne("Personas", "Persona")
-                        .WithMany()
-                        .HasForeignKey("PersonaId");
-
-                    b.HasOne("TiposAportes", "TiposAporte")
-                        .WithMany()
-                        .HasForeignKey("TipoAporteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Persona");
-
-                    b.Navigation("TiposAporte");
                 });
 
             modelBuilder.Entity("Aportes", b =>

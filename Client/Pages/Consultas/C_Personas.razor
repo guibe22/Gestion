@@ -1,0 +1,57 @@
+﻿@page "/C_personas"
+@inject IPersonaServices PersonaServices
+
+<div class= "card">
+
+     <div class="card-header ">
+        <h1>Consulta Personas</h1>
+     </div>
+
+    <div class="card-body">
+         <table class="table">
+            <thead>
+                <tr>
+                    <th>PersonaId</th>
+                    <th>Nombre</th>
+                    <th>Telefono</th>
+                    <th>Celular</th>
+                    <th>Email</th>
+                    <th>Direccion</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Total Aportado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var persona in PersonaServices.ListaPersonas)
+                {
+                    <tr>
+                        <td>@persona.PersonaId</td>
+                        <td>@persona.Nombre</td>
+                        <td>@persona.Telefono</td>
+                        <td>@persona.Celular</td>
+                        <td>@persona.Email</td>
+                        <td>@persona.Direccion</td>
+                        <td>@persona.FechaNacimiento</td>
+                        <td>@persona.TotalAportado</td>
+                        
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+     </div>
+
+</div>
+
+
+
+
+
+@code {
+     protected override async Task OnInitializedAsync()
+    {
+       
+        await PersonaServices.GetList();
+    }
+    
+}

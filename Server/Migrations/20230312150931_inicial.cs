@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gestion.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class inicial1 : Migration
+    public partial class inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -71,7 +71,7 @@ namespace Gestion.Server.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TipoAporteId = table.Column<int>(type: "int", nullable: false),
                     Valor = table.Column<float>(type: "real", nullable: false),
-                    PersonaId = table.Column<int>(type: "int", nullable: true),
+                    PersonaId = table.Column<int>(type: "int", nullable: false),
                     AporteId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -82,17 +82,6 @@ namespace Gestion.Server.Migrations
                         column: x => x.AporteId,
                         principalTable: "Aportes",
                         principalColumn: "AporteId");
-                    table.ForeignKey(
-                        name: "FK_AporteDetalles_Personas_PersonaId",
-                        column: x => x.PersonaId,
-                        principalTable: "Personas",
-                        principalColumn: "PersonaId");
-                    table.ForeignKey(
-                        name: "FK_AporteDetalles_TiposAportes_TipoAporteId",
-                        column: x => x.TipoAporteId,
-                        principalTable: "TiposAportes",
-                        principalColumn: "TipoAporteId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -111,16 +100,6 @@ namespace Gestion.Server.Migrations
                 name: "IX_AporteDetalles_AporteId",
                 table: "AporteDetalles",
                 column: "AporteId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AporteDetalles_PersonaId",
-                table: "AporteDetalles",
-                column: "PersonaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AporteDetalles_TipoAporteId",
-                table: "AporteDetalles",
-                column: "TipoAporteId");
         }
 
         /// <inheritdoc />
@@ -130,13 +109,13 @@ namespace Gestion.Server.Migrations
                 name: "AporteDetalles");
 
             migrationBuilder.DropTable(
-                name: "Aportes");
-
-            migrationBuilder.DropTable(
                 name: "Personas");
 
             migrationBuilder.DropTable(
                 name: "TiposAportes");
+
+            migrationBuilder.DropTable(
+                name: "Aportes");
         }
     }
 }

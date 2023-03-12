@@ -94,7 +94,7 @@ public class PersonaServices_S : IPersonaServices_S
                     else
                     {
                         response.Success = false;
-                        response.Message = "El producto no existe.";
+                        response.Message = "la Persona no existe.";
                     }
                 }
             }

@@ -4,22 +4,21 @@ public class TiposAportesServices : ITiposAportesServices
 {
 
     private readonly HttpClient _http;
+    public List<TiposAportes> ListaTiposAportes{ get; set;} = new List<TiposAportes>();
 
         public TiposAportesServices(HttpClient http)
         {
             _http = http;
         }
+     
 
-    public async Task<ServiceResponse<List<TiposAportes>>> GetList()
+    public async Task GetList()
     {
-        try
+         var results = await _http.GetFromJsonAsync<ServiceResponse<List<TiposAportes>>>("api/TiposAportes");
+
+         if (results != null && results.Data != null)
             {
-                var result = await _http.GetFromJsonAsync<List<TiposAportes>>("api/TiposAportes");
-                return new ServiceResponse<List<TiposAportes>> { Success = true, Data = result };
-            }
-            catch (Exception ex)
-            {
-                return new ServiceResponse<List<TiposAportes>> { Success = false, Message = ex.Message };
+                ListaTiposAportes = results.Data;
             }
     }
 }

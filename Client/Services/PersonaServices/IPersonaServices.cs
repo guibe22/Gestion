@@ -1,8 +1,9 @@
 public interface IPersonaServices
     {
+        List<Personas> ListaPersonas{get; set;}
         Task<Personas> Buscar(int Id);
         Task<ServiceResponse<Personas>> Guardar(Personas personas);
-        Task<ServiceResponse<List<Personas>>> GetList();
+        Task GetList(); 
         Task<ServiceResponse<string>> Eliminar(int Id);
 
     }
